@@ -11,11 +11,24 @@ var lastName = "";
 var userID = 0;
 
 // Login user
+function doSignUp()
+{
+	hideOrShow("signUp", false);
+	hideOrShow("createAccount", true);
+	hideOrShow("loginForm", false);
+}
+
 function doLogin()
 {
 	// Get username and password
 	var login = document.getElementById('loginUser').value;
 	var password1 = document.getElementById('pwUser').value;
+	/*
+	if (login.length == 0 || password1.length == 0)
+	{
+		alert("Please submit a valid username and password");
+		return;
+	}*/
 	document.getElementById('logginResult').innerHTML = "";
 
 	// Create json
@@ -60,8 +73,8 @@ function doLogin()
 	{
 		document.getElementById('logginResult').innerHTML = err.message;
 	}
-			
-		
+
+
 }
 
 // Not sure if this function is working correctly
@@ -133,7 +146,7 @@ function registerNewUser()
 	var newPassword = document.getElementById('passwordNewUser').value;
 
 	//var jsonPayload = '{"first" : "' + newFirstName + '", "last" : "' + newLastName + '","user" : "' + newUserName + '", "password" : "' + newPassword + '", "email" : "' + email + '"}';
-	
+
 	// Create the url -- Change the urlBase to aws domain
 	var url = urlBase + '/create.' + extension;
 
@@ -155,6 +168,12 @@ function registerNewUser()
 			if(this.readyState == 4 && this.status == 200)
 			{
 				document.getElementById("userAddResult").innerHTML =  "User is registered";
+
+				// Added to automatically login new user
+				document.getElementById("loginUser").innerHTML = document.getElementById("newUser");
+				document.getElementById("pwUser").innerHTML = document.getElementById("passwordNewUser");
+
+				doLogin();
 			}
 		};
 
@@ -171,7 +190,6 @@ function registerNewUser()
 		hideOrShow("loginForm", false);
 		hideOrShow("loggedInDiv", true);
 		hideOrShow("createAccount", false);
-		
 }
 
 
@@ -184,7 +202,7 @@ function hideOrShow( elementId, showState )
 		vis = "hidden";
 		dis = "none";
 	}
-	
+
 	document.getElementById( elementId ).style.visibility = vis;
 	document.getElementById( elementId ).style.display = dis;
 }

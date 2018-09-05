@@ -1,0 +1,36 @@
+body,h1,h2,h3,h4,h5,h6 {font-family: "Courier New", Courier, sans-serif;}
+body {
+    height: 100%;
+    color: #525a5e;
+    line-height: 1.8;
+    text-align: center;
+    font-size: 1.7vw;
+    background-image: url('https://i0.wp.com/ficedu.org/wp-content/uploads/2016/07/Savin-NY-Website-Background-Web.jpg');
+    background-size: cover;
+}
+
+label {
+  display: inline-block;
+  font-size: 1.2vw;
+  text-align: justify;
+  width: 10%;
+}
+
+input, button {
+  display: inline-block;
+  font-family: "Courier New", Courier, sans-serif;
+  font-size: 1.2vw;
+}
+
+input, select, textarea{
+    color: #000000;
+}
+
+textarea:focus, input:focus {
+    color: #000000;
+}
+
+.w3-wide {letter-spacing: 10px;}
+.w3-hover-opacity {cursor: pointer;}
+
+}

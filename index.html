@@ -6,19 +6,22 @@
 <head>
 	<title>Contact Manager</title>
 	<!-- Make sure these two files are in the same folder as the html file -->
-	<link rel="stylesheet" type="text/css" href="styles.css">
+	<link rel="stylesheet" type="text/css" href="index.css">
 	<script type="text/javascript" src="index.js"></script>
 </head>
 <body>
-	
+
 	<!-- Login the user -->
 	<div id="loginForm">
 			<h1>Contact Manager</h1>
+			<h2>Log In</h2>
 			<!-- Feel free to change the id's of these inputs -->
-			Username: <input type="text" id="loginUser"><br>
-			PassWord <input type="password" id="pwUser"><br>
+			Username: <input type="text" id="loginUser" required=""><br>
+			Password: <input type="password" id="pwUser" required=""><br>
 			<!-- Call javascript function, make sure index.js is in the same folder -->
 			<button type="submit" onclick="doLogin();">Login</button>
+			<br><br>
+			<button id="signUp" type="submit" onclick="doSignUp();">Sign Up</button>
 	</div>
 
 	<!-- Displays once the user has logged in, else it stays hidden -->
@@ -31,8 +34,8 @@
 	<span id="logginResult"></span>
 
 	<!-- Create a new user account-->
-	<div id="createAccount">
-		<h2>Create your Account</h2>
+	<div id="createAccount" style="display:none; visibility:hidden;">
+		<h2>Create Your Account</h2>
 		<!-- Again, feel free to change the id names just make sure the changes are also made in the javascript file-->
 			<input type="text" id="firstName" placeholder="First Name" required=""><br>
 			<input type="text" id="lastName" placeholder="Last Name" required=""><br>
@@ -45,24 +48,26 @@
 
 	<!-- Search for a contact, stays hidden until the user logs in-->
 	<div id="contactList" style="display: none; visibility: hidden;">
-		<h2>Search Contacts</h2><br>
+		<br>
 		<input type="text" name="search" id="searchContact">
 		<!-- Havent started the code for searchContact and deleteContact functions yet so they don't do anything-->
 		<button type="submit" onclick="searchContact();">Search Contact</button>
+		<br>
+		<input type="text" name="search" id="deleteContact">
 		<button type="submit" onclick="deleteContact();">Delete Contact</button>
 	</div>
 
 	<!-- Hidden until user logs in-->
 	<div id="addContactList" style="display: none; visibility: hidden;">
-			<h2>Add Contact</h2><br>
-			First Name: <input type="text" id="addFirstName"><br>
-			Last Name: <input type="text" id="addLastName"><br>
-			Phone Number: <input type="text" id="addPhoneNumber"><br>
-			Email: <input type="text" id="addEmail"><br>
-			Home Address: <input type="text" id="addAddress"><br>
+			<h2>Add Contact</h2>
+			<label>First Name:</label> <input type="text" id="addFirstName"><br>
+			<label>Last Name:</label> <input type="text" id="addLastName"><br>
+			<label>Phone Number:</label> <input type="text" id="addPhoneNumber"><br>
+			<label>Email:</label> <input type="text" id="addEmail"><br>
+			<label>Home Address:</label> <input type="text" id="addAddress"><br>
 			<button type="submit" onclick="addContact();">Add Contact</button><br>
 			<span id="contactAddResult"></span>
 	</div>
-	
+
 </body>
 </html>
