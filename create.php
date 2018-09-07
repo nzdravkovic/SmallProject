@@ -10,17 +10,19 @@
 	$email = $inData["email"];
 
 	// Info for server and database access -- change values to server info on aws
-	$username = 'root';
-	$password = 'Dg464569!';
-	$server = 'localhost';
-	$database = 'practice';
+	$username = 'conman';
+	$password = 'bananasAreActuallyCorn72!';
+	$server = 'mydatabase.c7s05rybpupb.us-east-2.rds.amazonaws.com';
+	$database = 'conmandatabase';
 
 	// Connect to remote database on server
 	$conn = new mysqli($server, $username, $password, $database);
 
 	// Failed to connect to server -- return error
 	if($conn->connect_error)
+	{
 		returnWithError($conn->connect_error);
+	}
 
 	// Create new user
 	else
