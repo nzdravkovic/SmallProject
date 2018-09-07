@@ -1,2 +1,2 @@
-COP Small project<br>
+# COP Small project<br>
 Personal Contact Manager
