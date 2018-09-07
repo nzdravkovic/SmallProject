@@ -2,7 +2,7 @@
 //COP 4331
 
 // Url -- need to change this string to whatever the domain is on the aws server
-var urlBase = 'http://localhost';
+var urlBase = 'ttp://ec2-18-219-60-79.us-east-2.compute.amazonaws.com/';
 
 var extension = 'php';
 
