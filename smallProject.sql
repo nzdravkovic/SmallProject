@@ -37,6 +37,7 @@ CREATE TABLE `contacts` (
   `email` varchar(255) NOT NULL,
   `contactID` int(11) NOT NULL AUTO_INCREMENT,
   `userID` int(11) NOT NULL,
+  `address` varchar(255) NOT NULL,
   PRIMARY KEY (`contactID`),
   UNIQUE KEY `contactID` (`contactID`),
   UNIQUE KEY `email` (`email`),
@@ -70,7 +71,7 @@ CREATE TABLE `users` (
   `userID` int(11) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`userID`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -79,6 +80,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
+INSERT INTO `users` VALUES ('mike','ramirez','$2y$10$q7YKVyRor2S.aEjcXw2hSe8pkX9mdWC2Wl6PI6pMzpxkCJF1ZiPwG','mike123','something@yahoo.com',1);
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -91,4 +93,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-09-01 15:45:15
+-- Dump completed on 2018-09-07 15:21:25
