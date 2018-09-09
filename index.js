@@ -1,7 +1,7 @@
 //Personal Contact Manager
 //COP 4331
 
-// Url -- need to change this string to whatever the domain is on the aws server
+// Url
 var urlBase = 'http://ec2-18-219-60-79.us-east-2.compute.amazonaws.com/';
 
 var extension = 'php';
@@ -10,12 +10,26 @@ var firstName = "";
 var lastName = "";
 var userID = 0;
 
-// Login user
+// Directs to SignUp
 function doSignUp()
 {
 	hideOrShow("signUp", false);
 	hideOrShow("createAccount", true);
 	hideOrShow("loginForm", false);
+}
+
+// Back to Login
+function backToLogin()
+{
+	hideOrShow("signUp", true);
+	hideOrShow("createAccount", false);
+	hideOrShow("loginForm", true);
+}
+
+// Shows search results
+function showResults()
+{
+
 }
 
 function doLogin()
@@ -73,8 +87,6 @@ function doLogin()
 	{
 		document.getElementById('logginResult').innerHTML = err.message;
 	}
-
-
 }
 
 // Not sure if this function is working correctly
@@ -105,11 +117,10 @@ function addContact()
 			{
 				document.getElementById("addFirstName").value = "";
 				document.getElementById("addLastName").value = ""
-			    document.getElementById("addPhoneNumber").value = ""
+		    document.getElementById("addPhoneNumber").value = ""
 				document.getElementById("addEmail").value = ""
-			    document.getElementById("addAddress").value = ""
-
-			    document.getElementById('contactAddResult').innerHTML = "Contact Added";
+		    document.getElementById("addAddress").value = ""
+		    document.getElementById('contactAddResult').innerHTML = "Contact Added";
 			}
 		};
 
@@ -119,14 +130,41 @@ function addContact()
 	{
 		document.getElementById('logginResult').innerHTML = err.message;
 	}
-
-
-
 }
 
+// Searches for contacts and presents results in a table
 function searchContact()
 {
+	let searchName = document.getElementById("searchContact").value;
 
+	var jsonPayload = '{"searchInquiry" : "' + searchName + '"}';
+
+	var url = urlBase + '/search.' + extension;
+
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST", url, true);
+	xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+
+	try
+	{
+		xhr.onreadystatechange = function()
+		{
+
+			if(this.readyState == 4 && this.status == 200)
+			{
+				document.getElementById("searchContact").value = "";
+				document.getElementById('contactSearchResult').innerHTML = "Contact(s) Found";
+
+				showResults();
+			}
+		};
+
+		xhr.send(jsonPayload);
+	}
+	catch(err)
+	{
+		document.getElementById('logginResult').innerHTML = err.message;
+	}
 }
 
 function deleteContact()

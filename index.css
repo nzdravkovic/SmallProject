@@ -1,5 +1,5 @@
-body,h1,h2,h3,h4,h5,h6 {font-family: "Courier New", Courier, sans-serif;}
 body {
+    font-family: "Courier New", Courier, sans-serif;
     height: 100%;
     color: #525a5e;
     line-height: 1.8;
@@ -9,17 +9,38 @@ body {
     height: auto 100%;
 }
 
+#contactList {
+  width: 65%;
+  float: right;
+}
+
+#addContactList {
+  float: left;
+  padding-left: 3em;
+}
+
+table {
+  font-size: 1.4vw;
+}
+
 label {
   display: inline-block;
   font-size: 1.2vw;
   text-align: justify;
-  width: 10%;
+  width: 35%;
 }
 
 input, button {
+  margin: 0 auto;
   display: inline-block;
   font-family: "Courier New", Courier, sans-serif;
   font-size: 1.2vw;
+}
+
+table {
+  margin-left: auto;
+  margin-right: auto;
+  border-spacing: 3em;
 }
 
 input, select, textarea{
