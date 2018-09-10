@@ -10,7 +10,7 @@ var firstName = "";
 var lastName = "";
 var userID = 0;
 
-// Directs to SignUp
+// Directs to signup
 function doSignUp()
 {
 	hideOrShow("signUp", false);
@@ -25,18 +25,25 @@ function backToLogin()
 	hideOrShow("createAccount", false);
 	hideOrShow("loginForm", true);
 }
-
-// Shows search results
+ // Shows search results
 function showResults()
 {
+ }
 
-}
 
+//secured
 function doLogin()
 {
 	// Get username and password
-	var login = document.getElementById('loginUser').value;
-	var password1 = document.getElementById('pwUser').value;
+	var login = document.getElementById('loginUser').value.replace(/[^[a-zA-Z0-9]{4,20}]/g, '');
+	var password1 = document.getElementById('pwUser').value.replace(/[^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,32})]/g, '');
+	if(password1.length>32||password1.length<4||login.length<4||login.length>20)
+	{
+		alert("Please submit a valid username and password");
+		return;
+	}
+	var hashedPassword = crypt(password1,'$2y$09$whatsyourbagelsona?$');
+
 	/*
 	if (login.length == 0 || password1.length == 0)
 	{
@@ -46,7 +53,7 @@ function doLogin()
 	document.getElementById('logginResult').innerHTML = "";
 
 	// Create json
-	var jsonPayload = '{"Log" : "' + login + '", "password" : "' + password1 + '"}';
+	var jsonPayload = '{"Log" : "' + login + '", "password" : "' + hashedPassword + '"}';
 
 	// Send url
 	var url = urlBase + '/login.' + extension;
@@ -59,6 +66,7 @@ function doLogin()
 		// Send json
 		xhr.send(jsonPayload);
 
+		
 		var jsonObject = JSON.parse(jsonPayload);
 		var userId = jsonObject.id;
 
@@ -87,24 +95,28 @@ function doLogin()
 	{
 		document.getElementById('logginResult').innerHTML = err.message;
 	}
+
+
 }
 
 // Not sure if this function is working correctly
 // Doesn't insert anything in the database so could be this or something wrong with the add.php script
 function addContact()
 {
-	var contactFirstName = document.getElementById("addFirstName").value;
-	var contactLastName = document.getElementById("addLastName").value
-	var contactPhoneNumber = document.getElementById("addPhoneNumber").value
-	var contactEmail = document.getElementById("addEmail").value
-	var contactAddress = document.getElementById("addAddress").value
+	
+	var contactFirstName = document.getElementById("addFirstName").value.replace(/[^a-zA-Z0-9]/g, '');
+	var contactLastName = document.getElementById("addLastName").value.replace(/[^a-zA-Z0-9]/g, '');
+	var contactPhoneNumber = document.getElementById("addPhoneNumber").value.replace(/[^0-9]/g, '');
+	var contactEmail = document.getElementById("addEmail").value.replace(/[^a-zA-Z0-9|@|.]/g, '');
+	var contactAddress = document.getElementById("addAddress").value.replace(/[^a-zA-Z0-9]/g, '');
 
 	document.getElementById("contactAddResult").innerHTML = "";
 
 	var jsonPayload = '{"firstName" : "' + contactFirstName + '", "lastName" : "' + contactLastName + '", "phone" : "' + contactPhoneNumber + '", "email": "' + contactEmail
 	 + '", "address" : "' + contactAddress + '", "userId" : "' + userID + '"}';
 	var url = urlBase + '/add.' + extension;
-
+	
+	
 	var xhr = new XMLHttpRequest();
 	xhr.open("POST", url, true);
 	xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
@@ -117,10 +129,11 @@ function addContact()
 			{
 				document.getElementById("addFirstName").value = "";
 				document.getElementById("addLastName").value = ""
-		    document.getElementById("addPhoneNumber").value = ""
+			    document.getElementById("addPhoneNumber").value = ""
 				document.getElementById("addEmail").value = ""
-		    document.getElementById("addAddress").value = ""
-		    document.getElementById('contactAddResult').innerHTML = "Contact Added";
+			    document.getElementById("addAddress").value = ""
+
+			    document.getElementById('contactAddResult').innerHTML = "Contact Added";
 			}
 		};
 
@@ -130,41 +143,14 @@ function addContact()
 	{
 		document.getElementById('logginResult').innerHTML = err.message;
 	}
+
+
+
 }
 
-// Searches for contacts and presents results in a table
 function searchContact()
 {
-	let searchName = document.getElementById("searchContact").value;
 
-	var jsonPayload = '{"searchInquiry" : "' + searchName + '"}';
-
-	var url = urlBase + '/search.' + extension;
-
-	var xhr = new XMLHttpRequest();
-	xhr.open("POST", url, true);
-	xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
-
-	try
-	{
-		xhr.onreadystatechange = function()
-		{
-
-			if(this.readyState == 4 && this.status == 200)
-			{
-				document.getElementById("searchContact").value = "";
-				document.getElementById('contactSearchResult').innerHTML = "Contact(s) Found";
-
-				showResults();
-			}
-		};
-
-		xhr.send(jsonPayload);
-	}
-	catch(err)
-	{
-		document.getElementById('logginResult').innerHTML = err.message;
-	}
 }
 
 function deleteContact()
@@ -172,26 +158,47 @@ function deleteContact()
 
 }
 
-// This function works for me
+//secured
 function registerNewUser()
 {
 	// getElementById gets the text in the input where the id = "whatever"
 	// Gets the value of each input and stores it in a variable
-	var newFirstName = document.getElementById("firstName").value;
-	var newLastName = document.getElementById('lastName').value;
-	var email = document.getElementById('email').value;
-	var newUserName = document.getElementById('newUser').value;
-	var newPassword = document.getElementById('passwordNewUser').value;
-
-	//var jsonPayload = '{"first" : "' + newFirstName + '", "last" : "' + newLastName + '","user" : "' + newUserName + '", "password" : "' + newPassword + '", "email" : "' + email + '"}';
-
+	var cleanFirstName = document.getElementById("firstName").value.replace(/[^a-zA-Z]/g, '');	//only letters
+	var shinyFirstName = mysqli_real_escape_string(cleanFirstName);
+	var cleanLastName = document.getElementById('lastName').value.replace(/[^a-zA-Z]/g, ''); 	//only letters
+	var shinyLastName = mysqli_real_escape_string(cleanLastName);
+	var cleanEmail = document.getElementById('email').value.replace(/[^a-zA-Z|@|.]/g, '');		//only letters, '@', and '.'
+	var shinyEmail = mysqli_real_escape_string(cleanEmail);
+	var cleanUserName = document.getElementById('newUser').value.replace(/[^a-zA-Z0-9]/g, '');	//only letters and numbers
+	var shinyUserName = mysqli_real_escape_string(cleanUserName);
+	/*
+	// getElementById gets the text in the input where the id = "whatever"
+	// Gets the value of each input and stores it in a variable
+	var newFirstName = document.getElementById("firstName").value.replace(/[^a-zA-Z]/g, '');	//only letters
+	var newLastName = document.getElementById('lastName').value.replace(/[^a-zA-Z]/g, ''); 	//only letters
+	var email = document.getElementById('email').value.replace(/[^a-zA-Z|@|.]/g, '');			//only letters, '@', and '.'
+	var newUserName = document.getElementById('newUser').value.replace(/[^a-zA-Z0-9]/g, '');	//only letters and numbers
+	*/
+	
+	
+	
+	//NOTE: THIS REGEX NEEDS TESTING
+	//What this *should* do is require:
+	//>Between 8 and 32 characters
+	//>At least one lowercase letter (?=.*[a-z])
+	//>At least one uppercase letter (?=.*[A-Z])
+	//>At least one number (?=.*[0-9])
+	//>At least one special character (?=.*[!@#\$%\^&\*])
+	var newPassword = document.getElementById('passwordNewUser').value.replace(/[^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,32})]/g, '');
+	var hashedPassword = crypt(newPassword,'$2y$09$whatsyourbagelsona?$');
+	
 	// Create the url -- Change the urlBase to aws domain
 	var url = urlBase + '/create.' + extension;
 
 	// Create json -- the variables in quotes can be changed to a different name but the changes need to be
 	// reflected in the php scripts
-	var jsonPayload = '{"first" : "' + newFirstName + '", "last" : "' + newLastName + '", "userNew" : "' + newUserName + '", "password": "' + newPassword
-	 + '", "email" : "' + email + '"}';
+	var jsonPayload = '{"first" : "' + shinyFirstName + '", "last" : "' + shinyLastName + '", "userNew" : "' + shinyUserName + '", "password": "' + hashedPassword
+	 + '", "email" : "' + shinyEmail + '"}';
 	//console.log(url);
 
 	// Some networking code available in Leineckers slides -- don't really know what it does
@@ -220,7 +227,7 @@ function registerNewUser()
 	}
 	catch(err)
 	{
-		// Diplay error
+		// Display error
 		document.getElementById("userAddResult").innerHTML =  "User could not be registered. Try again";
 	}
 
@@ -230,6 +237,32 @@ function registerNewUser()
 		hideOrShow("createAccount", false);
 }
 
+// Searches for contacts and presents results in a table
+function searchContact()
+{
+	let searchName = document.getElementById("searchContact").value;
+ 	var jsonPayload = '{"searchInquiry" : "' + searchName + '"}';
+ 	var url = urlBase + '/search.' + extension;
+ 	var xhr = new XMLHttpRequest();
+	xhr.open("POST", url, true);
+	xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+ 	try
+	{
+		xhr.onreadystatechange = function()
+		{
+ 			if(this.readyState == 4 && this.status == 200)
+			{
+				document.getElementById("searchContact").value = "";
+				document.getElementById('contactSearchResult').innerHTML = "Contact(s) Found";
+ 				showResults();
+			}
+		};
+ 		xhr.send(jsonPayload);
+	}
+	catch(err)
+	{
+		document.getElementById('logginResult').innerHTML = err.message;
+	}
 
 function hideOrShow( elementId, showState )
 {
