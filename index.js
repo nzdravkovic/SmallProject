@@ -42,7 +42,8 @@ function doLogin()
 		alert("Please submit a valid username and password");
 		return;
 	}
-	var hashedPassword = crypt(password1,'$2y$09$whatsyourbagelsona?$');
+	//turns out javascript encryption sux, leaving this here for now
+	//var hashedPassword = crypt(password1,'$2y$09$whatsyourbagelsona?$');
 
 	/*
 	if (login.length == 0 || password1.length == 0)
@@ -53,7 +54,7 @@ function doLogin()
 	document.getElementById('logginResult').innerHTML = "";
 
 	// Create json
-	var jsonPayload = '{"Log" : "' + login + '", "password" : "' + hashedPassword + '"}';
+	var jsonPayload = '{"Log" : "' + login + '", "password" : "' + password1 + '"}';
 
 	// Send url
 	var url = urlBase + '/login.' + extension;
