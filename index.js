@@ -2,7 +2,7 @@
 //COP 4331
 
 // Url
-var urlBase = 'http://ec2-18-219-60-79.us-east-2.compute.amazonaws.com/';
+var urlBase = 'http://ec2-18-219-60-79.us-east-2.compute.amazonaws.com';
 
 var extension = 'php';
 
@@ -25,6 +25,7 @@ function backToLogin()
 	hideOrShow("createAccount", false);
 	hideOrShow("loginForm", true);
 }
+
  // Shows search results
 function showResults()
 {
@@ -264,6 +265,7 @@ function searchContact()
 	{
 		document.getElementById('logginResult').innerHTML = err.message;
 	}
+}
 
 function hideOrShow( elementId, showState )
 {
