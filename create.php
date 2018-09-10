@@ -1,13 +1,19 @@
 <?php 
+
+
+
+	//The Json object that this script recieves is from index.js and looks like this:
+	//var jsonPayload = '{"first" : "' + shinyFirstName + '", "last" : "' + shinyLastName + '", "userNew" : "' + shinyUserName + '",
+	//"password": "' + hashedPassword + '", "email" : "' + shinyEmail + '"}';
 	// Put json into array
 	$inData = getRequestInfo();
 
 	// Assign variables json strings
-	$firstName = $inData["first"];
-	$lastName = $inData["last"];
-	$user = $inData["userNew"];
-	$password = $inData["password"];
-	$email = $inData["email"];
+	$firstName = preg_replace("/[^a-zA-Z]/","",$inData["first"]);
+	$lastName = preg_replace("/[^a-zA-Z]/","",$inData["last"]);
+	$user = preg_replace("/[^A-Za-z0-9]/","",$inData["userNew"]);
+	$password = preg_replace("/[^A-Za-z0-9!@#$%^&*]/","",$inData["password"]);
+	$email = preg_replace("/[^A-Za-z0-9|@|.]/","",$inData["email"]);
 
 	// Info for server and database access -- change values to server info on aws
 	$username = 'conman';
@@ -39,6 +45,7 @@
 		
 		// Hashes the password 
 		$hash = password_hash($password, PASSWORD_DEFAULT);
+		
 
 		// Insert data into database
 		// These values are the columns in my localhost database 
@@ -57,7 +64,7 @@
 	{
 		return json_decode(file_get_contents('php://input'), true);
 	}
-
+	//should these two functions be the same?
 	function sendAsJson($obj)
 	{
 		return json_decode(file_get_contents('php://input'), true);
