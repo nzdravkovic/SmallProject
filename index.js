@@ -151,10 +151,32 @@ function searchContact()
 	//what is the json for this going to look like?
 }
 
-function deleteContact()
+// need to research toggleclass for table
+// deletecontact using jquery, no clue if it works
+function deleteContact(id)
 {
-	//what is the json for this going to look like?
+	var url = urlBase + '/delete.' + extension;
 	
+	jQuery.ajax(
+	{
+		url: url,
+		type: 'POST',
+		data: {UserID:UserID, id:id},
+
+		success: function(resp)
+		{
+			if(resp != "fail")
+			{
+				var obj = $parseJSON(resp);
+				$('#' + obj.id).remove();
+				$(".contactSearchResult").toggleClass("nameClass");
+			}
+			else
+			{
+				showError("deleteContact API failed");
+			}
+		}
+	});
 }
 
 //secured
