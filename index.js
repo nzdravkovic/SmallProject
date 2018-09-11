@@ -97,6 +97,42 @@ function doLogin()
 
 }
 
+// executes logout
+function doLogout()
+{
+	var jsonPayload = '{' + '"userId":"' + userID'"}';
+	var url = urlBase + '/logout.' + extension;
+
+	var xhr = new XMLHttpRequest();
+	xhr.open("Post", url, true);
+	xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+
+	xhr.onreadystatechange = function()
+	{
+		if(this.readyState == 4 && this.status == 200)
+		{
+			resetAdd();
+
+			// reset global variables
+			firstName = "";
+			lastName = "";
+			userID = 0;
+		}
+	}
+
+	xhr.sent(jsonPayload);
+}
+
+// resets fields for add contact
+function resetAdd()
+{
+	document.getElementById("addFirstName").value = "";
+	document.getElementById("addLastName").value = "";
+	document.getElementById("addPhoneNumber").value = "";
+	document.getElementById("addEmail").value = "";
+	document.getElementById("addAddress").value = "";
+}
+
 // Not sure if this function is working correctly
 // Doesn't insert anything in the database so could be this or something wrong with the add.php script
 function addContact()
@@ -125,13 +161,8 @@ function addContact()
 
 			if(this.readyState == 4 && this.status == 200)
 			{
-				document.getElementById("addFirstName").value = "";
-				document.getElementById("addLastName").value = ""
-			    document.getElementById("addPhoneNumber").value = ""
-				document.getElementById("addEmail").value = ""
-			    document.getElementById("addAddress").value = ""
-
-			    document.getElementById('contactAddResult').innerHTML = "Contact Added";
+				resetAdd();
+			    	document.getElementById('contactAddResult').innerHTML = "Contact Added";
 			}
 		};
 
