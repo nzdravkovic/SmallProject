@@ -149,6 +149,7 @@ function addContact()
 	var jsonPayload = '{"firstName" : "' + contactFirstName + '", "lastName" : "' + contactLastName + '", "phone" : "' + contactPhoneNumber + '", "email": "' + contactEmail
 	 + '", "address" : "' + contactAddress + '", "userId" : "' + userID + '"}';
 	var url = urlBase + '/add.' + extension;
+	document.getElementById("deleteContact").value = "";
 	
 	
 	var xhr = new XMLHttpRequest();
@@ -170,6 +171,7 @@ function addContact()
 	}
 	catch(err)
 	{
+		//why does this give you a login result response in a contactadd function?
 		document.getElementById('logginResult').innerHTML = err.message;
 	}
 
@@ -184,9 +186,40 @@ function searchContact()
 
 // need to research toggleclass for table
 // deletecontact using jquery, no clue if it works
+//the json payload for this function will look like this:
+//var jsonPayload = '{"userName" : "' + userName + '", "contactName" : "' + contactName + '"}';
 function deleteContact(id)
 {
 	var url = urlBase + '/delete.' + extension;
+	
+	var toDelete = document.getElementById("deleteContact").value.replace(/[^[a-zA-Z]{4,20}]/g, '');
+	var jsonPayload = '{"uid" : "' + uid + '", "contactName" : "' + toDelete + '"}';
+	
+	//not sure if this should go above or below the ajax stuff
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST", url, true);
+	xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+	try
+	{
+		xhr.onreadystatechange = function()
+		{
+
+			if(this.readyState == 4 && this.status == 200)
+			{
+				//needs to be reset del
+				resetAdd();
+			}
+		};
+
+		xhr.send(jsonPayload);
+	}
+	catch(err)
+	{
+		//why does this give you a login result response in a contactadd function?
+		document.getElementById('logginResult').innerHTML = err.message;
+	}
+	
+	
 	
 	jQuery.ajax(
 	{
