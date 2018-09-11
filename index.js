@@ -29,6 +29,7 @@ function backToLogin()
  // Shows search results
 function showResults()
 {
+	
  }
 
 
@@ -147,12 +148,13 @@ function addContact()
 
 function searchContact()
 {
-
+	//what is the json for this going to look like?
 }
 
 function deleteContact()
 {
-
+	//what is the json for this going to look like?
+	
 }
 
 //secured
