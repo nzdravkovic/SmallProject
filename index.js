@@ -46,12 +46,7 @@ function doLogin()
 	//turns out javascript encryption sux, leaving this here for now
 	//var hashedPassword = crypt(password1,'$2y$09$whatsyourbagelsona?$');
 
-	/*
-	if (login.length == 0 || password1.length == 0)
-	{
-		alert("Please submit a valid username and password");
-		return;
-	}*/
+	
 	document.getElementById('logginResult').innerHTML = "";
 
 	// Create json
