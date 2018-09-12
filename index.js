@@ -149,7 +149,7 @@ function addContact()
 	var jsonPayload = '{"firstName" : "' + contactFirstName + '", "lastName" : "' + contactLastName + '", "phone" : "' + contactPhoneNumber + '", "email": "' + contactEmail
 	 + '", "address" : "' + contactAddress + '", "userId" : "' + userID + '"}';
 	var url = urlBase + '/add.' + extension;
-	document.getElementById("deleteContact").value = "";
+	//document.getElementById("deleteContact").value = "";
 	
 	
 	var xhr = new XMLHttpRequest();
@@ -186,14 +186,12 @@ function searchContact()
 
 // need to research toggleclass for table
 // deletecontact using jquery, no clue if it works
-//the json payload for this function will look like this:
-//var jsonPayload = '{"userName" : "' + userName + '", "contactName" : "' + contactName + '"}';
 function deleteContact(id)
 {
 	var url = urlBase + '/delete.' + extension;
 	
 	var toDelete = document.getElementById("deleteContact").value.replace(/[^[a-zA-Z]{4,20}]/g, '');
-	var jsonPayload = '{"uid" : "' + uid + '", "contactName" : "' + toDelete + '"}';
+	var jsonPayload = '{"uid" : "' + uid + '", "id" : "' + id + '"}';
 	
 	//not sure if this should go above or below the ajax stuff
 	var xhr = new XMLHttpRequest();
