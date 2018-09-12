@@ -42,8 +42,24 @@
 	$conn = new mysqli($server, $username, $password, $database);
 
 	//note: this if has one equals because we're checking to see if the function returned with an error or not
-	if($sql = $mysqli->prepare('SELECT * FROM users WHERE username = ? and password = ?')):
+	if($sql = $conn->prepare('SELECT * FROM users WHERE username = ? and password = ?')):
 		$sql->bind_param('ss', $login, $pwd);
+		$sql->execute();
+		header("Content-Type: application/json; charset=UTF-8");
+
+		/*
+		$conn = new mysqli("myServer", "myUser", "myPassword", "Northwind");
+		$stmt = $conn->prepare("SELECT name FROM ? LIMIT ?");
+		$stmt->bind_param("ss", $obj->table, $obj->limit);
+		$stmt->execute();
+		*/
+		$result = $sql->get_result();
+		$outp = $result->fetch_all(MYSQLI_ASSOC);
+
+		echo json_encode($outp);
+		return json_encode($outp);
+		
+		
 		
 		//if($sql->execute()):
 		$result=$conn->query($sql);
