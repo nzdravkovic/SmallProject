@@ -31,8 +31,8 @@
 	$id = $cleanData["id"];
 
 	// Info for server and database access -- change values to server info on aws
-	$username = 'root';
-	$password = 'Dg464569!';
+	$username = 'conman';
+	$password = 'bananasAreActuallyCorn72!';
 	$server = 'mydatabase.c7s05rybpupb.us-east-2.rds.amazonaws.com';
 	$database = 'conmandatabase';
 
