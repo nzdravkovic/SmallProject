@@ -27,10 +27,65 @@ function backToLogin()
 }
 
  // Shows search results
-function showResults()
+function showResults(res)
 {
-	
- }
+	var table = document.getElementById("searchResults");
+
+	for (var i = 0; i < res.size; i++)
+	{
+		var row = table.insertRow(i);
+
+		var fName = row.insertCell(0);
+		var lName = row.insertCell(1);
+		var number = row.insertCell(2);
+		var email = row.insertCell(3);
+		var addr = row.insertCell(4);
+		var del = row.insertCell(5);
+
+		fName.innerHTML = res[i].fName;
+		lName.innerHTML = res[i].lName;
+		number.innerHTML = res[i].number;
+		email.innerHTML = res[i].email;
+		addr.innerHTML = res[i].addr;
+		del.innerHTML = '<button type="submit" onclick="deleteContact();">Delete</button>';
+	}
+}
+
+ // Shows search results
+function showAll()
+{
+	var searchCriteria = "";
+
+	document.getElementById("contactSearchResult").innerHTML = "";
+
+	var jsonPayload = '{"searchCriteria" : "' + searchCriteria + '", "userId" : "' + userID + '"}';
+	var url = urlBase + '/search.' + extension;
+
+
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST", url, true);
+	xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
+	try
+	{
+		xhr.onreadystatechange = function()
+		{
+			if(this.readyState == 4 && this.status == 200)
+			{
+				var res = JSON.parse(xhr.responseText);
+				document.getElementById("searchContact").value = "";
+
+				document.getElementById('contactAddResult').innerHTML = showResults(res.result);
+			}
+		};
+
+		xhr.send(jsonPayload);
+	}
+	catch(err)
+	{
+		document.getElementById('logginResult').innerHTML = err.message;
+	}
+
+}
 
 
 //secured
@@ -333,11 +388,12 @@ function searchContact()
 	{
 		xhr.onreadystatechange = function()
 		{
- 			if(this.readyState == 4 && this.status == 200)
+			if(this.readyState == 4 && this.status == 200)
 			{
+				var res = JSON.parse(xhr.responseText);
 				document.getElementById("searchContact").value = "";
-				document.getElementById('contactSearchResult').innerHTML = "Contact(s) Found";
- 				showResults();
+
+				document.getElementById('contactAddResult').innerHTML = showResults(res.result);
 			}
 		};
  		xhr.send(jsonPayload);
