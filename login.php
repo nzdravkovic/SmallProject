@@ -12,7 +12,7 @@
 	}
 
 
-	echo("REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
+	
 	
 	//The JSON that this function receives is from index.js and looks like this:
 	//var jsonPayload = '{"Log" : "' + login + '", "password" : "' + hashedPassword + '"}';
@@ -53,6 +53,7 @@
 			if($sql->num_rows > 0):
 				
 				//successful login!
+				return json_encode($result);
 			else:
 				//nooooope
 				return;
@@ -60,8 +61,6 @@
 			
 		endif;
 			$sql->close();
-			//what does this return?
-			return json_encode($ret);
 	endif;
 
 	$id = 0;
