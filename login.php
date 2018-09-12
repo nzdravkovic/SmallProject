@@ -11,6 +11,8 @@
 		return preg_replace("/[^A-Za-z0-9!@#$%^&*]/","",$string);
 	}
 
+
+	echo("REEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
 	
 	//The JSON that this function receives is from index.js and looks like this:
 	//var jsonPayload = '{"Log" : "' + login + '", "password" : "' + hashedPassword + '"}';
@@ -43,9 +45,10 @@
 	if($sql = $mysqli->prepare('SELECT * FROM users WHERE username = ? and password = ?')):
 		$sql->bind_param('ss', $login, $pwd);
 		
-		if($sql->execute()):
+		//if($sql->execute()):
+		$result=$conn->query($sql);
 
-			$sql->fetch();
+			//$sql->fetch();
 
 			if($sql->num_rows > 0):
 				
