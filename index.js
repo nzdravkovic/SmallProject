@@ -101,6 +101,9 @@ function doLogin()
 	}
 	//turns out javascript encryption sux, leaving this here for now
 	//var hashedPassword = crypt(password1,'$2y$09$whatsyourbagelsona?$');
+	
+	// Username is showing up as undefined -- doing some testing
+	console.log(login);
 
 	
 	document.getElementById('logginResult').innerHTML = "";
