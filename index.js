@@ -2,7 +2,7 @@
 //COP 4331
 
 // Url
-var urlBase = 'http://ec2-18-219-60-79.us-east-2.compute.amazonaws.com';
+var urlBase = 'ec2-18-219-60-79.us-east-2.compute.amazonaws.com';
 
 var extension = 'php';
 
@@ -92,8 +92,9 @@ function showAll()
 function doLogin()
 {
 	// Get username and password
-	var login = document.getElementById('loginUser').value//.replace(/[^[a-zA-Z0-9]{4,20}]/g, '');
-	var password1 = document.getElementById('pwUser').value//.replace(/[^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,32})]/g, '');
+	var login = document.getElementById('loginUser').value.replace(/[^[a-zA-Z0-9]{4,20}]/g, '');
+	//var password1 = document.getElementById('pwUser').value.replace(/[^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,32})]/g, '');
+	var password1 = document.getElementById('pwUser').value;
 	if(password1.length>32||password1.length<4||login.length<4||login.length>20)
 	{
 		alert("Please submit a valid username and password");
@@ -113,6 +114,7 @@ function doLogin()
 
 	// Send url
 	var url = urlBase + '/login.' + extension;
+	console.log(url);
 
 	var xhr = new XMLHttpRequest();
 	xhr.open("POST", url, true);
@@ -122,6 +124,7 @@ function doLogin()
 		// Send json
 		xhr.send(jsonPayload);
 
+		
 		var jsonObject = JSON.parse(jsonPayload);
 		var userId = jsonObject.id;
 
@@ -157,6 +160,7 @@ function doLogin()
 // executes logout
 function doLogout()
 {
+	/*
 	var jsonPayload = '{' + '"userId":"' + userID'"}';
 	var url = urlBase + '/logout.' + extension;
 
@@ -178,6 +182,7 @@ function doLogout()
 	}
 
 	xhr.sent(jsonPayload);
+	*/
 }
 
 // resets fields for add contact
@@ -190,6 +195,7 @@ function resetAdd()
 	document.getElementById("addAddress").value = "";
 }
 
+
 // Not sure if this function is working correctly
 // Doesn't insert anything in the database so could be this or something wrong with the add.php script
 function addContact()
@@ -197,17 +203,32 @@ function addContact()
 	
 	var contactFirstName = document.getElementById("addFirstName").value.replace(/[^a-zA-Z0-9]/g, '');
 	var contactLastName = document.getElementById("addLastName").value.replace(/[^a-zA-Z0-9]/g, '');
-	var contactPhoneNumber = document.getElementById("addPhoneNumber").value.replace(/[^0-9]/g, '');
+	var contactPhoneNumber = document.getElementById("addPhoneNumber").value;
 	var contactEmail = document.getElementById("addEmail").value.replace(/[^a-zA-Z0-9|@|.]/g, '');
 	var contactAddress = document.getElementById("addAddress").value.replace(/[^a-zA-Z0-9]/g, '');
 
-	document.getElementById("contactAddResult").innerHTML = "";
+	var searchFirstName = document.getElementById('searchFirstName').innerHTML = contactFirstName;
+	var searchLastName = document.getElementById('searchLastName').innerHTML = contactLastName;
+	var searchPhone = document.getElementById('searchPhone').innerHTML = contactPhoneNumber;
+	var searchEmail = document.getElementById('searchEmail').innerHTML = contactEmail;
+	var searchAddress = document.getElementById('searchAddress').innerHTML = contactAddress;
+	
+	if(searchFirstName != "")
+		hideOrShow("firstDelete", true);
+	if(searchFirstName != "" && searchLastName != "" && searchPhone != "" && searchEmail != "" && searchAddress != "")
+		hideOrShow("secondDelete", true);
 
+
+
+	/*
+	document.getElementById("contactAddResult").innerHTML = "";
+	var ID = 19;
 	var jsonPayload = '{"firstName" : "' + contactFirstName + '", "lastName" : "' + contactLastName + '", "phone" : "' + contactPhoneNumber + '", "email": "' + contactEmail
-	 + '", "address" : "' + contactAddress + '", "userId" : "' + userID + '"}';
+	 + '", "address" : "' + contactAddress + '", "userId" : "' + ID + '"}';
 	var url = urlBase + '/add.' + extension;
 	//document.getElementById("deleteContact").value = "";
-	
+	console.log(jsonPayload);
+	console.log(url);
 	
 	var xhr = new XMLHttpRequest();
 	xhr.open("POST", url, true);
@@ -231,20 +252,27 @@ function addContact()
 		//why does this give you a login result response in a contactadd function?
 		document.getElementById('logginResult').innerHTML = err.message;
 	}
+*/
 
 
-
-}
-
-function searchContact()
-{
-	//what is the json for this going to look like?
 }
 
 // need to research toggleclass for table
 // deletecontact using jquery, no clue if it works
 function deleteContact(id)
 {
+
+	var del = document.getElementById('deleteContact').value;
+
+	var searchFirstName = document.getElementById('searchFirstName').innerHTML = "";
+	var searchLastName = document.getElementById('searchLastName').innerHTML = "";
+	var searchPhone = document.getElementById('searchPhone').innerHTML = "";
+	var searchEmail = document.getElementById('searchEmail').innerHTML = "";
+	var searchAddress = document.getElementById('searchAddress').innerHTML = "";
+
+	document.getElementById('deleteContact').innerHTML = "";
+
+	/*
 	var url = urlBase + '/delete.' + extension;
 	
 	var toDelete = document.getElementById("deleteContact").value.replace(/[^[a-zA-Z]{4,20}]/g, '');
@@ -273,6 +301,7 @@ function deleteContact(id)
 		//why does this give you a login result response in a contactadd function?
 		document.getElementById('logginResult').innerHTML = err.message;
 	}
+	*/
 	
 	
 	
@@ -303,14 +332,14 @@ function registerNewUser()
 {
 	// getElementById gets the text in the input where the id = "whatever"
 	// Gets the value of each input and stores it in a variable
-	var cleanFirstName = document.getElementById("firstName").value.replace(/[^a-zA-Z]/g, '');	//only letters
-	var shinyFirstName = mysqli_real_escape_string(cleanFirstName);
-	var cleanLastName = document.getElementById('lastName').value.replace(/[^a-zA-Z]/g, ''); 	//only letters
-	var shinyLastName = mysqli_real_escape_string(cleanLastName);
-	var cleanEmail = document.getElementById('email').value.replace(/[^a-zA-Z|@|.]/g, '');		//only letters, '@', and '.'
-	var shinyEmail = mysqli_real_escape_string(cleanEmail);
-	var cleanUserName = document.getElementById('newUser').value.replace(/[^a-zA-Z0-9]/g, '');	//only letters and numbers
-	var shinyUserName = mysqli_real_escape_string(cleanUserName);
+	var cleanFirstName = document.getElementById("firstName").value	//only letters
+	//var shinyFirstName = mysqli_real_escape_string(cleanFirstName);
+	var cleanLastName = document.getElementById('lastName').value	//only letters
+	//var shinyLastName = mysqli_real_escape_string(cleanLastName);
+	var cleanEmail = document.getElementById('email').value	//only letters, '@', and '.'
+	//var shinyEmail = mysqli_real_escape_string(cleanEmail);
+	var cleanUserName = document.getElementById('newUser').value//only letters and numbers
+	//var shinyUserName = mysqli_real_escape_string(cleanUserName);
 	/*
 	// getElementById gets the text in the input where the id = "whatever"
 	// Gets the value of each input and stores it in a variable
@@ -329,16 +358,17 @@ function registerNewUser()
 	//>At least one uppercase letter (?=.*[A-Z])
 	//>At least one number (?=.*[0-9])
 	//>At least one special character (?=.*[!@#\$%\^&\*])
-	var newPassword = document.getElementById('passwordNewUser').value.replace(/[^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,32})]/g, '');
-	var hashedPassword = crypt(newPassword,'$2y$09$whatsyourbagelsona?$');
+	//var newPassword = document.getElementById('passwordNewUser').value.replace(/[^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,32})]/g, '');
+	var newPassword = document.getElementById('passwordNewUser');
+	//var hashedPassword = crypt(newPassword,'$2y$09$whatsyourbagelsona?$');
 	
 	// Create the url -- Change the urlBase to aws domain
 	var url = urlBase + '/create.' + extension;
 
 	// Create json -- the variables in quotes can be changed to a different name but the changes need to be
 	// reflected in the php scripts
-	var jsonPayload = '{"first" : "' + shinyFirstName + '", "last" : "' + shinyLastName + '", "userNew" : "' + shinyUserName + '", "password": "' + hashedPassword
-	 + '", "email" : "' + shinyEmail + '"}';
+	var jsonPayload = '{"first" : "' + cleanFirstName + '", "last" : "' + cleanLastName + '", "userNew" : "' + cleanUserName + '", "password": "' + newPassword
+	 + '", "email" : "' + cleanEmail + '"}';
 	//console.log(url);
 
 	// Some networking code available in Leineckers slides -- don't really know what it does
@@ -380,6 +410,22 @@ function registerNewUser()
 // Searches for contacts and presents results in a table
 function searchContact()
 {
+
+	var contactFirstName = document.getElementById("addFirstName").value.replace(/[^a-zA-Z0-9]/g, '');
+	var contactLastName = document.getElementById("addLastName").value.replace(/[^a-zA-Z0-9]/g, '');
+	var contactPhoneNumber = document.getElementById("addPhoneNumber").value;
+	var contactEmail = document.getElementById("addEmail").value.replace(/[^a-zA-Z0-9|@|.]/g, '');
+	var contactAddress = document.getElementById("addAddress").value.replace(/[^a-zA-Z0-9]/g, '');
+
+		var searchFirstName = document.getElementById('searchFirstName').innerHTML = contactFirstName;
+	var searchLastName = document.getElementById('searchLastName').innerHTML = contactLastName;
+	var searchPhone = document.getElementById('searchPhone').innerHTML = contactPhoneNumber;
+	var searchEmail = document.getElementById('searchEmail').innerHTML = contactEmail;
+	var searchAddress = document.getElementById('searchAddress').innerHTML = contactAddress;
+
+	document.getElementById('searchContact').innerHTML = "";
+
+	/*
 	let searchName = document.getElementById("searchContact").value;
  	var jsonPayload = '{"searchInquiry" : "' + searchName + '"}';
  	var url = urlBase + '/search.' + extension;
@@ -404,6 +450,7 @@ function searchContact()
 	{
 		document.getElementById('logginResult').innerHTML = err.message;
 	}
+	*/
 }
 
 function hideOrShow( elementId, showState )
