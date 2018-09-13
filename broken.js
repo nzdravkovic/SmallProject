@@ -420,8 +420,8 @@ function registerNewUser()
 	}
 
 		// Hides or displays the form based on boolean passed
-		hideOrShow("loginForm", false);
-		hideOrShow("loggedInDiv", true);
+		hideOrShow("loginForm", true);
+		hideOrShow("loggedInDiv", false);
 		hideOrShow("createAccount", false);
 }
 
