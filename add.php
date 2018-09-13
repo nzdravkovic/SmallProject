@@ -3,7 +3,7 @@
 	$inData = getRequestInfo();
 
 	// Assign variables json strings
-	$userId = inData["userId"]
+	$userId = inData["userId"];
 	$firstName = $inData["firstName"];
 	$lastName = $inData["lastName"];
 	$number = $inData["phoneNumber"];
