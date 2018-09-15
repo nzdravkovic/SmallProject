@@ -2,13 +2,14 @@
 //COP 4331
 
 // Url
-var urlBase = 'http://ec2-18-219-60-79.us-east-2.compute.amazonaws.com';
+var urlBase = '';
 
 var extension = 'php';
 
 var firstName = "";
 var lastName = "";
 var userID = 0;
+var conID = 0;
 
 // Directs to signup
 function doSignUp()
@@ -31,23 +32,27 @@ function showResults(res)
 {
         var table = document.getElementById("searchResults");
 
-        for (var i = 0; i < res.size; i++)
+        for (var i = 0; i < 1; i++)
         {
-                var row = table.insertRow(i);
 
-                var fName = row.insertCell(0);
-                var lName = row.insertCell(1);
-                var number = row.insertCell(2);
-                var email = row.insertCell(3);
-                var addr = row.insertCell(4);
-                var del = row.insertCell(5);
+                // Creates new rows <tr> elements
+                var row = table.insertRow(1);
 
-                fName.innerHTML = res[i].fName;
-                lName.innerHTML = res[i].lName;
-                number.innerHTML = res[i].number;
-                email.innerHTML = res[i].email;
-                addr.innerHTML = res[i].addr;
-                del.innerHTML = '<button type="submit" onclick="deleteContact();">Delete</button>';
+                // Creates new columns <td> elements
+                var s1 = row.insertCell(0);
+                var s2 = row.insertCell(1);
+                var s3 = row.insertCell(2);
+                var s4 = row.insertCell(3);
+                var s5 = row.insertCell(4);
+                var s6 = row.insertCell(5);
+
+                // results array from json in search.php
+                s1.innerHTML = res.results[0];
+                s2.innerHTML = res.results[1];
+                s3.innerHTML = res.results[2];
+                s4.innerHTML = res.results[3];
+                s5.innerHTML = res.results[4];
+                s6.innerHTML = '<button type="submit" onclick="deleteContact();">Delete</button>';
         }
 }
 
@@ -61,7 +66,6 @@ function showAll()
         var jsonPayload = '{"searchCriteria" : "' + searchCriteria + '", "userId" : "' + userID + '"}';
         var url = urlBase + '/search.' + extension;
 
-
         var xhr = new XMLHttpRequest();
         xhr.open("POST", url, true);
         xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
@@ -72,9 +76,9 @@ function showAll()
                         if(this.readyState == 4 && this.status == 200)
                         {
                                 var res = JSON.parse(xhr.responseText);
-                                document.getElementById("searchContact").value = "";
-
-                                document.getElementById('contactAddResult').innerHTML = showResults(res.result);
+                                document.getElementById("searchContact").value = res;
+                                document.getElementById('contactAddResult').innerHTML = showResults(res.results);
+        
                         }
                 };
 
@@ -99,42 +103,38 @@ function doLogin()
                 alert("Please submit a valid username and password");
                 return;
         }
+
         //turns out javascript encryption sux, leaving this here for now
         //var hashedPassword = crypt(password1,'$2y$09$whatsyourbagelsona?$');
-
-        // Username is showing up as undefined -- doing some testing
-        console.log(login);
-
 
         document.getElementById('logginResult').innerHTML = "";
 
         // Create json
-        var jsonPayload = '{"Log" : "' + login + '", "password" : "' + password1 + '"}';
+        var jsonPayload = '{"Log" : "' + login + '", "pW" : "' + password1 + '"}';
 
         // Send url
-        var url = urlBase + 'login.' + extension;
+        var url = urlBase + '/login.' + extension;
+        console.log(url);
 
         var xhr = new XMLHttpRequest();
-        xhr.open("POST", url, true);
+        xhr.open("POST", url, false);
         xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
         try
         {
                 // Send json
                 xhr.send(jsonPayload);
 
+                // Retrieve json from php
+                var jsonObject = JSON.parse(xhr.responseText);
+                userID = jsonObject.id;
 
-                var jsonObject = JSON.parse(jsonPayload);
-                var userId = jsonObject.id;
-
-                if(userId < 1)
+                // Incorrect pass/user 
+                if(userID < 1)
                 {
-                        //console.log("user/pass combo incorrect");
+                        console.log("user/pass combo incorrect");
                         document.getElementById('logginResult').innerHTML = "User/password combination incorrect";
                         return;
                 }
-
-                //firstName = jsonObject.firstName;
-                //lastName = jsonObject.lastName;
 
                 document.getElementById('userLog').innerHTML = login;
 
@@ -146,19 +146,19 @@ function doLogin()
                 hideOrShow("createAccount", false);
                 hideOrShow("contactList", true);
                 hideOrShow("addContactList", true);
+
+              
         }
         catch(err)
         {
                 document.getElementById('logginResult').innerHTML = err.message;
         }
-
-
 }
 
 // executes logout
 function doLogout()
 {
-        userId = 0;
+        userID = 0;
         firstName = lastName = "";
 
         resetAdd();
@@ -180,23 +180,20 @@ function resetAdd()
         document.getElementById("addAddress").value = "";
 }
 
-// Not sure if this function is working correctly
-// Doesn't insert anything in the database so could be this or something wrong with the add.php script
+// Add contact 
 function addContact()
 {
-
         var contactFirstName = document.getElementById("addFirstName").value.replace(/[^a-zA-Z0-9]/g, '');
         var contactLastName = document.getElementById("addLastName").value.replace(/[^a-zA-Z0-9]/g, '');
         var contactPhoneNumber = document.getElementById("addPhoneNumber").value.replace(/[^0-9]/g, '');
         var contactEmail = document.getElementById("addEmail").value.replace(/[^a-zA-Z0-9|@|.]/g, '');
         var contactAddress = document.getElementById("addAddress").value.replace(/[^a-zA-Z0-9]/g, '');
-        userId = 13;
 
         document.getElementById("contactAddResult").innerHTML = "";
-
-        var jsonPayload = '{"firstName" : "' + contactFirstName + '", "lastName" : "' + contactLastName + '", "phone" : "' + contactPhoneNumber + '", "email": "' + contactEmail  + '", "address" : "' + contactAddress + '", "userId" : "' + 13 + '"}';
+        
+        // Create JSON to send to php
+        var jsonPayload = '{"firstName" : "' + contactFirstName + '", "lastName" : "' + contactLastName + '", "phone" : "' + contactPhoneNumber + '", "email": "' + contactEmail  + '", "address" : "' + contactAddress + '", "userId" : "' + userID + '"}';
         var url = urlBase + '/add.' + extension;
-        //document.getElementById("deleteContact").value = "";
 
 
         var xhr = new XMLHttpRequest();
@@ -204,41 +201,57 @@ function addContact()
         xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
         try
         {
+                // Send that JSON!!
+                xhr.send(jsonPayload);
                 xhr.onreadystatechange = function()
                 {
-
                         if(this.readyState == 4 && this.status == 200)
                         {
                                 resetAdd();
+                                //showAll();
+                                 var table = document.getElementById("searchResults");
+
+                                // Display contact info once added 
+                                for (var i = 0; i < 1; i++)
+                                {
+
+                                // Creates new rows <tr> elements
+                                var row = table.insertRow(1);
+
+                                // Creates new columns <td> elements
+                                var s1 = row.insertCell(0);
+                                var s2 = row.insertCell(1);
+                                var s3 = row.insertCell(2);
+                                var s4 = row.insertCell(3);
+                                var s5 = row.insertCell(4);
+                                var s6 = row.insertCell(5);
+
+                                s1.innerHTML = contactFirstName;
+                                s2.innerHTML = contactLastName
+                                s3.innerHTML = contactPhoneNumber;
+                                s4.innerHTML = contactEmail;
+                                s5.innerHTML = contactAddress;
+                                s6.innerHTML = '<button type="submit" onclick="deleteContact();">Delete</button>';
+                                 }
+
                                 document.getElementById('contactAddResult').innerHTML = "Contact Added";
                         }
                 };
-
-                xhr.send(jsonPayload);
         }
         catch(err)
         {
                 //why does this give you a login result response in a contactadd function?
                 document.getElementById('logginResult').innerHTML = err.message;
         }
-
-
-
 }
 
-function searchContact()
+// Delete a contact
+function deleteContact()
 {
-        //what is the json for this going to look like?
-}
-
-// need to research toggleclass for table
-// deletecontact using jquery, no clue if it works
-function deleteContact(id)
-{
-        var url = urlBase + '/delete.' + extension;
-
         var toDelete = document.getElementById("deleteContact").value.replace(/[^[a-zA-Z]{4,20}]/g, '');
-        var jsonPayload = '{"uid" : "' + uid + '", "id" : "' + id + '"}';
+        var jsonPayload = '{"id" : "' + userID + '"}';
+
+        var url = urlBase + '/removeContact.' + extension;
 
         //not sure if this should go above or below the ajax stuff
         var xhr = new XMLHttpRequest();
@@ -253,6 +266,7 @@ function deleteContact(id)
                         {
                                 //needs to be reset del
                                 resetAdd();
+
                         }
                 };
 
@@ -260,12 +274,11 @@ function deleteContact(id)
         }
         catch(err)
         {
-                //why does this give you a login result response in a contactadd function?
                 document.getElementById('logginResult').innerHTML = err.message;
         }
 
 
-
+        /*
         jQuery.ajax(
         {
                 url: url,
@@ -286,6 +299,7 @@ function deleteContact(id)
                         }
                 }
         });
+        */
 }
 
 //secured
@@ -297,6 +311,7 @@ function registerNewUser()
         //var shinyFirstName = mysqli_real_escape_string(cleanFirstName);
         var cleanLastName = document.getElementById('lastName').value.replace(/[^a-zA-Z]/g, '');        //only letters
         //var shinyLastName = mysqli_real_escape_string(cleanLastName);
+        
         var cleanEmail = document.getElementById('email').value.replace(/[^a-zA-Z|@|.]/g, '');          //only letters, '@', and '.'
         //var shinyEmail = mysqli_real_escape_string(cleanEmail);
         var cleanUserName = document.getElementById('newUser').value.replace(/[^a-zA-Z0-9]/g, '');      //only letters and numbers
@@ -328,7 +343,7 @@ function registerNewUser()
         // Create json -- the variables in quotes can be changed to a different name but the changes need to be
         // reflected in the php scripts
         var jsonPayload = '{"first" : "' + cleanFirstName + '", "last" : "' + cleanLastName + '", "userNew" : "' + cleanUserName + '", "password": "' + newPassword + '", "email" : "' + cleanEmail + '"}';
-        //console.log(url);
+        console.log(jsonPayload);
 
         // Some networking code available in Leineckers slides -- don't really know what it does
         var xhr = new XMLHttpRequest();
@@ -336,12 +351,14 @@ function registerNewUser()
         xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
         try
         {
+                 xhr.send(jsonPayload);
                 xhr.onreadystatechange = function()
                 {
 
                         if(this.readyState == 4 && this.status == 200)
                         {
-                                document.getElementById("userAddResult").innerHTML =  "User is registered";
+                                
+                                document.getElementById('userAddResult').innerHTML = "Account created";
 
                                 // Added to automatically login new user
                                 document.getElementById("loginUser").innerHTML = document.getElementById("newUser");
@@ -350,9 +367,7 @@ function registerNewUser()
                                 //doLogin();
                         }
                 };
-
-                // Send the json to php scripts?
-                xhr.send(jsonPayload);
+        
         }
         catch(err)
         {
@@ -361,9 +376,9 @@ function registerNewUser()
         }
 
                 // Hides or displays the form based on boolean passed
-        hideOrShow("loginForm", true);
+        hideOrShow("loginForm", false);
         hideOrShow("loggedInDiv", false);
-        hideOrShow("createAccount", false);
+        hideOrShow("createAccount", true);
         hideOrShow("contactList", false);
         hideOrShow("addContactList", false);
 }
@@ -371,25 +386,38 @@ function registerNewUser()
 // Searches for contacts and presents results in a table
 function searchContact()
 {
-        let searchName = document.getElementById("searchContact").value;
-        var jsonPayload = '{"searchInquiry" : "' + searchName + '"}';
+        var searchName = document.getElementById("searchContact").value;
+        var jsonPayload = '{"search" : "' + searchName + '", "userId" : "' + userID + '"}';
         var url = urlBase + '/search.' + extension;
+
         var xhr = new XMLHttpRequest();
-        xhr.open("POST", url, true);
+        xhr.open("POST", url, false);
         xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
         try
         {
+                 xhr.send(jsonPayload);
                 xhr.onreadystatechange = function()
                 {
                         if(this.readyState == 4 && this.status == 200)
                         {
-                                var res = JSON.parse(xhr.responseText);
-                                document.getElementById("searchContact").value = "";
+                                var jsonObject = JSON.parse(xhr.responseText);
+                                var contactID = jsonObject.id;
+                                console.log("Contact ID: " + contactID);
 
-                                document.getElementById('contactAddResult').innerHTML = showResults(res.result);
+                                if(contactID == 0)
+                                {
+                                        var result = document.getElementById('searchContact').value
+                                        alert(result + " is not on your contact list");
+                                        return;
+                                }
+                   
+                                document.getElementById("searchContact").value = "";
+                
+                                 showResults(jsonObject);
+                                //document.getElementById('contactAddResult').innerHTML = jsonObject.results[0] + " added";
                         }
                 };
-                xhr.send(jsonPayload);
+               
         }
         catch(err)
         {
