@@ -235,7 +235,7 @@ function searchContact()
 // deletecontact using jquery, no clue if it works
 function deleteContact(id)
 {
-        var url = urlBase + '/delete.' + extension;
+        var url = urlBase + '/newdelete.' + extension;
 
         var toDelete = document.getElementById("deleteContact").value.replace(/[^[a-zA-Z]{4,20}]/g, '');
         var jsonPayload = '{"uid" : "' + uid + '", "id" : "' + id + '"}';

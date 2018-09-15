@@ -5,19 +5,13 @@ body {
     line-height: 1.8;
     text-align: center;
     font-size: 1.7vw;
-
     background-image: url('https://i0.wp.com/ficedu.org/wp-content/uploads/2016/07/Savin-NY-Website-Background-Web.jpg');
-    height: 100vh;
-
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
+    height: auto 100%;
 }
 
 #contactList {
-  width: 60%;
+  width: 65%;
   float: right;
-  padding-right: 3em;
 }
 
 #addContactList {
@@ -25,24 +19,8 @@ body {
   padding-left: 3em;
 }
 
-@media screen and (max-width: 600px) {
-
-  #contactList {
-    width: auto;
-    float: none;
-  }
-
-  #addContactList {
-    float: none;
-    align-items: center;
-    width: auto 35%;
-    margin-left: 16em;
-    margin-right: 16em;
-  }
-}
-
 table {
-  font-size: 1.2vw;
+  font-size: 1.0vw;
 }
 
 label {

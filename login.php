@@ -10,8 +10,9 @@
 	{
 		return preg_replace("/[^A-Za-z0-9!@#$%^&*]/","",$string);
 	}
+console.log("SCREEEE",3,"test.txt");
 
-
+json_last_error_msg();
 	
 	
 	//The JSON that this function receives is from index.js and looks like this:
@@ -46,7 +47,7 @@
 		$sql->bind_param('ss', $login, $pwd);
 		$sql->execute();
 		header("Content-Type: application/json; charset=UTF-8");
-
+error_log("fuuuu" +  $sql + "",0,"/var/log/httpd/error_log");
 		/*
 		$conn = new mysqli("myServer", "myUser", "myPassword", "Northwind");
 		$stmt = $conn->prepare("SELECT name FROM ? LIMIT ?");
@@ -54,10 +55,10 @@
 		$stmt->execute();
 		*/
 		$result = $sql->get_result();
-		$outp = $result->fetch_all(MYSQLI_ASSOC);
+	//	$outp = $result->fetch_all(MYSQLI_ASSOC);
 
-		echo json_encode($outp);
-		return json_encode($outp);
+		echo json_encode($result);
+//		return json_encode($outp);
 		
 		
 		
@@ -66,7 +67,7 @@
 
 			//$sql->fetch();
 
-			if($sql->num_rows > 0):
+			if($result->num_rows > 0):
 				
 				//successful login!
 				return json_encode($result);
