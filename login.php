@@ -20,90 +20,91 @@
 	// Put json into array
 	$inData = getRequestInfo();
 	
+	/*
 	$cleanData = array(
     'Log'   => userfilter($inData["Log"],
     'password' => passfilter($inData["password"])
 	);
+	*/
 	
 	
 	
 	// Assign variables json strings 
 	// reference the json in the javascript code 
-	$login = $cleanData["Log"];
-	$pw = $cleanData["password"];
+	$login = $inData["Log"];
+	$pw = $inData["pW"];
+
+	$id = 0;
+	$firstName = "";
+	$lastName = "";
 
 	// Info for server and database access -- change values to server info on aws
+	$database = 'conmandatabase';
 	$username = 'conman';
 	$password = 'bananasAreActuallyCorn72!';
 	$server = 'mydatabase.c7s05rybpupb.us-east-2.rds.amazonaws.com';
-	$database = 'conmandatabase';
 
 	// Connect to remote database on server
 	$conn = new mysqli($server, $username, $password, $database);
 
 	//note: this if has one equals because we're checking to see if the function returned with an error or not
-	if($sql = $conn->prepare('SELECT * FROM users WHERE username = ? and password = ?')):
-		$sql->bind_param('ss', $login, $pwd);
-		$sql->execute();
-		header("Content-Type: application/json; charset=UTF-8");
-
-		/*
-		$conn = new mysqli("myServer", "myUser", "myPassword", "Northwind");
-		$stmt = $conn->prepare("SELECT name FROM ? LIMIT ?");
-		$stmt->bind_param("ss", $obj->table, $obj->limit);
-		$stmt->execute();
-		*/
-		$result = $sql->get_result();
-		$outp = $result->fetch_all(MYSQLI_ASSOC);
-
-		echo json_encode($outp);
-		return json_encode($outp);
-		
-		
-		
-		//if($sql->execute()):
-		$result=$conn->query($sql);
-
-			//$sql->fetch();
-
-			if($sql->num_rows > 0):
-				
-				//successful login!
-				return json_encode($result);
-			else:
-				//nooooope
-				return;
-			endif;
-			
-		endif;
-			$sql->close();
-	endif;
-
-	$id = 0;
-	$firstName = "";
-	$lastName = "";
-	
-
-	// Failed to connect to server -- return error
 	if($conn->connect_error)
 	{
 		returnWithError($conn->connect_error);
 	}
 
+	// Create new user
 	else
-	{		
+	{
+		// Check if email already exists
+		$sql = "select * from users where username = '$login' and password = '$pw';";
+		//$sql = "select * from users where username = 'ramirez1,nak2345' and password = '12345'";
+		$result = $conn->query($sql);
+
+		// This works correctly just gotta make sure json is being passed in 
+		if($result->num_rows > 0)
+		{
+			$row = $result->fetch_assoc();
+			$firstName = $row['firstName'];
+			$lastName = $row['lastName'];
+			$id = $row['userID'];
+			returnWithInfo($firstName, $lastName, $id);
+			
+		}
+		else
+		{
+			returnWithError("User does not exist");
+			exit();
+		}
 		$conn->close();
 	}
+
+	//returnWithInfo($firstName, $lastName, $id);
+
+	function sendResultInfoAsJson( $obj )
+	{
+		header('Content-type: application/json');
+		echo $obj;
+	}
+
+	
+		
+	function returnWithInfo( $firstName, $lastName, $id )
+	{
+		$retValue = '{"id":' . $id . ',"firstName":"' . $firstName . '","lastName":"' . $lastName . '","error":""}';
+		sendResultInfoAsJson( $retValue );
+	}
+	
 
 	function getRequestInfo()
 	{
 		return json_decode(file_get_contents('php://input'), true);
 	}
 
-	function returnWithError($error)
+	function returnWithError( $err )
 	{
-		$ret = '{"error": "' . $error . '"}';
-		sendAsJson($ret);
+		$retValue = '{"id":0,"firstName":"","lastName":"","error":"' . $err . '"}';
+		sendResultInfoAsJson( $retValue );
 	}
 
 
