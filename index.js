@@ -258,6 +258,7 @@ function deleteContact()
         xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
         try
         {
+                xhr.send(jsonPayload);
                 xhr.onreadystatechange = function()
                 {
 
@@ -265,11 +266,10 @@ function deleteContact()
                         {
                                 //needs to be reset del
                                 resetAdd();
+                                document.getElementById("contactAddResult").innerHTML = "Contact deleted";
 
                         }
                 };
-
-                xhr.send(jsonPayload);
         }
         catch(err)
         {
@@ -388,7 +388,7 @@ function searchContact()
         var url = urlBase + '/search.' + extension;
 
         var xhr = new XMLHttpRequest();
-        xhr.open("POST", url, false);
+        xhr.open("POST", url, true);
         xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
         try
         {
