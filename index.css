@@ -15,8 +15,8 @@ body {
 }
 
 #contactList {
-  width: 40%;
-  float: left;
+  width: 60%;
+  float: right;
   padding-right: 3em;
 }
 
@@ -42,7 +42,8 @@ body {
 }
 
 table {
-  font-size: 1.2vw;
+  font-size: 1.0vw;
+  table-layout: fixed;
 }
 
 label {
