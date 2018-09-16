@@ -30,12 +30,15 @@ function backToLogin()
  // Shows search results
 function showResults(res)
 {
+        document.getElementById("searchResults").innerHTML = "";
         var table = document.getElementById("searchResults");
+        var i = 0;
+        var counter = -1;
 
-        for (var i = 0; i < 1; i++)
+        while(res[i] != null)
         {
                 // Creates new rows <tr> elements
-                var row = table.insertRow(1);
+                var row = table.insertRow(++counter);
 
                 // Creates new columns <td> elements
                 var s1 = row.insertCell(0);
@@ -46,12 +49,13 @@ function showResults(res)
                 var s6 = row.insertCell(5);
 
                 // results array from json in search.php
-                s1.innerHTML = res.results[0];
-                s2.innerHTML = res.results[1];
-                s3.innerHTML = res.results[2];
-                s4.innerHTML = res.results[3];
-                s5.innerHTML = res.results[4];
-                s6.innerHTML = '<button type="submit" onclick="deleteContact();">Delete</button>';
+                s1.innerHTML = res.results[i];
+                s2.innerHTML = res.results[++i];
+                s3.innerHTML = res.results[++i];
+                s4.innerHTML = res.results[++i];
+                s5.innerHTML = res.results[++i];
+                s6.innerHTML = '<button id="'+ counter +'" type="submit" onclick="deleteContact();">Delete</button>';
+                i++;
         }
 }
 
@@ -75,8 +79,7 @@ function showAll()
                         if(this.readyState == 4 && this.status == 200)
                         {
                                 var res = JSON.parse(xhr.responseText);
-                                document.getElementById("searchContact").value = res;
-                                document.getElementById('contactAddResult').innerHTML = showResults(res.results);
+                                showResults(res);
 
                         }
                 };
@@ -230,7 +233,7 @@ function addContact()
                                 s3.innerHTML = contactPhoneNumber;
                                 s4.innerHTML = contactEmail;
                                 s5.innerHTML = contactAddress;
-                                s6.innerHTML = '<button type="submit" onclick="deleteContact();">Delete</button>';
+                                s6.innerHTML = '<button id="'+ table.rows.length +'" type="submit" onclick="deleteContact();">Delete</button>';
                                 }
 
                                 document.getElementById('contactAddResult').innerHTML = "Contact Added";
@@ -265,7 +268,7 @@ function deleteContact()
                         if(this.readyState == 4 && this.status == 200)
                         {
                                 //needs to be reset del
-                                resetAdd();
+                                showAll();
                                 document.getElementById("contactAddResult").innerHTML = "Contact deleted";
 
                         }
