@@ -30,11 +30,14 @@ function backToLogin()
  // Shows search results
 function showResults(res)
 {
+        console.log("AYYYY");
         var table = document.getElementById("searchResults");
 
         for (var i = 0; i < 1; i++)
         {
 
+                if(table.length < 1)
+                        var row = table.insertRow(0);
                 // Creates new rows <tr> elements
                 var row = table.insertRow(1);
 
@@ -56,14 +59,13 @@ function showResults(res)
         }
 }
 
+
  // Shows search results
 function showAll()
 {
         var searchCriteria = "";
 
         document.getElementById("contactSearchResult").innerHTML = "";
-
-        document.getElementById("contactSearchResult").innerHTML = "<tr><th>First Name</th><th>Last Name</th><th>Number</th><th>Email</th><th>Address</th><th></th></tr>";
 
         var jsonPayload = '{"searchCriteria" : "' + searchCriteria + '", "userId" : "' + userID + '"}';
         var url = urlBase + '/search.' + extension;
@@ -80,7 +82,7 @@ function showAll()
                                 var res = JSON.parse(xhr.responseText);
                                 document.getElementById("searchContact").value = res;
                                 document.getElementById('contactAddResult').innerHTML = showResults(res.results);
-
+        
                         }
                 };
 
@@ -130,7 +132,7 @@ function doLogin()
                 var jsonObject = JSON.parse(xhr.responseText);
                 userID = jsonObject.id;
 
-                // Incorrect pass/user
+                // Incorrect pass/user 
                 if(userID < 1)
                 {
                         console.log("user/pass combo incorrect");
@@ -149,7 +151,7 @@ function doLogin()
                 hideOrShow("contactList", true);
                 hideOrShow("addContactList", true);
 
-                showAll();
+              
         }
         catch(err)
         {
@@ -182,7 +184,7 @@ function resetAdd()
         document.getElementById("addAddress").value = "";
 }
 
-// Add contact
+// Add contact 
 function addContact()
 {
         var contactFirstName = document.getElementById("addFirstName").value.replace(/[^a-zA-Z0-9]/g, '');
@@ -192,7 +194,7 @@ function addContact()
         var contactAddress = document.getElementById("addAddress").value.replace(/[^a-zA-Z0-9]/g, '');
 
         document.getElementById("contactAddResult").innerHTML = "";
-
+        
         // Create JSON to send to php
         var jsonPayload = '{"firstName" : "' + contactFirstName + '", "lastName" : "' + contactLastName + '", "phone" : "' + contactPhoneNumber + '", "email": "' + contactEmail  + '", "address" : "' + contactAddress + '", "userId" : "' + userID + '"}';
         var url = urlBase + '/add.' + extension;
@@ -211,9 +213,9 @@ function addContact()
                         {
                                 resetAdd();
                                 //showAll();
-                                var table = document.getElementById("searchResults");
+                                 var table = document.getElementById("searchResults");
 
-                                // Display contact info once added
+                                // Display contact info once added 
                                 for (var i = 0; i < 1; i++)
                                 {
 
@@ -234,7 +236,7 @@ function addContact()
                                 s4.innerHTML = contactEmail;
                                 s5.innerHTML = contactAddress;
                                 s6.innerHTML = '<button type="submit" onclick="deleteContact();">Delete</button>';
-                                }
+                                 }
 
                                 document.getElementById('contactAddResult').innerHTML = "Contact Added";
                         }
@@ -250,8 +252,10 @@ function addContact()
 // Delete a contact
 function deleteContact()
 {
+        console.log("deleteing//");
         var toDelete = document.getElementById("deleteContact").value.replace(/[^[a-zA-Z]{4,20}]/g, '');
         var jsonPayload = '{"id" : "' + userID + '"}';
+        console.log("User ID: " + userID);
 
         var url = urlBase + '/removeContact.' + extension;
 
@@ -261,18 +265,21 @@ function deleteContact()
         xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
         try
         {
+                xhr.send(jsonPayload);
                 xhr.onreadystatechange = function()
                 {
 
                         if(this.readyState == 4 && this.status == 200)
                         {
-                                //needs to be reset del
+                                console.log("nice");
+
                                 resetAdd();
+                                document.getElementById('contactAddResult').innerHTML = "Contact deleted";
 
                         }
                 };
 
-                xhr.send(jsonPayload);
+                
         }
         catch(err)
         {
@@ -313,7 +320,7 @@ function registerNewUser()
         //var shinyFirstName = mysqli_real_escape_string(cleanFirstName);
         var cleanLastName = document.getElementById('lastName').value.replace(/[^a-zA-Z]/g, '');        //only letters
         //var shinyLastName = mysqli_real_escape_string(cleanLastName);
-
+        
         var cleanEmail = document.getElementById('email').value.replace(/[^a-zA-Z|@|.]/g, '');          //only letters, '@', and '.'
         //var shinyEmail = mysqli_real_escape_string(cleanEmail);
         var cleanUserName = document.getElementById('newUser').value.replace(/[^a-zA-Z0-9]/g, '');      //only letters and numbers
@@ -359,15 +366,17 @@ function registerNewUser()
 
                         if(this.readyState == 4 && this.status == 200)
                         {
-
+                                console.log("nice");
                                 document.getElementById('userAddResult').innerHTML = "Account created";
 
                                 // Added to automatically login new user
                                 document.getElementById("loginUser").innerHTML = document.getElementById("newUser");
                                 document.getElementById("pwUser").innerHTML = document.getElementById("passwordNewUser");
+
+                                //doLogin();
                         }
                 };
-
+        
         }
         catch(err)
         {
@@ -375,13 +384,12 @@ function registerNewUser()
                 document.getElementById("userAddResult").innerHTML =  "User could not be registered. Try again";
         }
 
-        // Hides or displays the form based on boolean passed
+                // Hides or displays the form based on boolean passed
         hideOrShow("loginForm", false);
         hideOrShow("loggedInDiv", false);
         hideOrShow("createAccount", true);
         hideOrShow("contactList", false);
         hideOrShow("addContactList", false);
-        hideOrShow("signUpButton", false);
 }
 
 // Searches for contacts and presents results in a table
@@ -392,7 +400,7 @@ function searchContact()
         var url = urlBase + '/search.' + extension;
 
         var xhr = new XMLHttpRequest();
-        xhr.open("POST", url, false);
+        xhr.open("POST", url, true);
         xhr.setRequestHeader("Content-type", "application/json; charset=UTF-8");
         try
         {
@@ -411,14 +419,15 @@ function searchContact()
                                         alert(result + " is not on your contact list");
                                         return;
                                 }
-
+                   
                                 document.getElementById("searchContact").value = "";
 
                                  showResults(jsonObject);
+
                                 //document.getElementById('contactAddResult').innerHTML = jsonObject.results[0] + " added";
                         }
                 };
-
+               
         }
         catch(err)
         {
