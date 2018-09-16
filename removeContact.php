@@ -6,14 +6,14 @@
 	
 	// Assign variables json strings 
 	// reference the json in the javascript code 
-	$id = $inData["id"];
+	$iD = $inData["id"];
 
 
 	// Info for server and database access -- change values to server info on aws
-	$database = 'practice';
-	$username = 'root';
-	$password = 'Dg464569!';
-	$server = 'localhost';
+	$database = 'conmandatabase';
+	$username = 'conman';
+	$password = 'bananasAreActuallyCorn72!';
+	$server = 'mydatabase.c7s05rybpupb.us-east-2.rds.amazonaws.com';
 
 	// Connect to remote database on server
 	$conn = new mysqli($server, $username, $password, $database);
@@ -28,7 +28,7 @@
 	else
 	{
 		// Check if email already exists
-		$sql = "delete from contacts where userID = '$id';";
+		$sql = "delete from contacts where userID = '$iD'";
 		//$sql = "insert into contacts (firstName, lastName, phoneNumber, email, userID, address) values" . "('test', 'test', 'test', 'test', 10, 'test');";
 		$result = $conn->query($sql);
 
@@ -41,12 +41,12 @@
 		$conn->close();
 	}
 
-	
+
 
 	function sendResultInfoAsJson( $obj )
 	{
 		header('Content-type: application/json');
-		echo $obj;
+		//echo $obj;
 	}
 
 	function returnWithInfo( $firstName, $lastName, $id )
