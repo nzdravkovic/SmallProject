@@ -1,42 +1,11 @@
-<?php 
+<?php 	
 
-	
-	function userfilter($string) 
-	{
-		return preg_replace("/[^A-Za-z0-9]/","",$string);
-	}
-	
-	function passfilter($string) 
-	{
-		return preg_replace("/[^A-Za-z0-9!@#$%^&*]/","",$string);
-	}
-
-
-	
-	
-	//The JSON that this function receives is from index.js and looks like this:
-	//var jsonPayload = '{"Log" : "' + login + '", "password" : "' + hashedPassword + '"}';
-
-	// Put json into array
 	$inData = getRequestInfo();
-	
-	/*
-	$cleanData = array(
-    'Log'   => userfilter($inData["Log"],
-    'password' => passfilter($inData["password"])
-	);
-	*/
-	
-	
 	
 	// Assign variables json strings 
 	// reference the json in the javascript code 
-	$login = $inData["Log"];
-	$pw = $inData["pW"];
+	$ID = $inData["contactID"];
 
-	$id = 0;
-	$firstName = "";
-	$lastName = "";
 
 	// Info for server and database access -- change values to server info on aws
 	$database = 'conmandatabase';
@@ -57,45 +26,33 @@
 	else
 	{
 		// Check if email already exists
-		$sql = "select * from users where username = '$login' and password = '$pw';";
-		//$sql = "select * from users where username = 'ramirez1,nak2345' and password = '12345'";
+		$sql = "delete from contacts where contactID = '$ID'";
+		//$sql = "insert into contacts (firstName, lastName, phoneNumber, email, userID, address) values" . "('test', 'test', 'test', 'test', 10, 'test');";
 		$result = $conn->query($sql);
 
 		// This works correctly just gotta make sure json is being passed in 
-		if($result->num_rows > 0)
+		if(!$result)
 		{
-			$row = $result->fetch_assoc();
-			$firstName = $row['firstName'];
-			$lastName = $row['lastName'];
-			$id = $row['userID'];
-			returnWithInfo($firstName, $lastName, $id);
-			
+				returnWithError("invalid contactID, bitch");
 		}
-		else
-		{
-			returnWithError("User does not exist");
-			exit();
-		}
+
 		$conn->close();
 	}
 
-	//returnWithInfo($firstName, $lastName, $id);
+
 
 	function sendResultInfoAsJson( $obj )
 	{
 		header('Content-type: application/json');
-		echo $obj;
+		//echo $obj;
 	}
 
-	
-		
 	function returnWithInfo( $firstName, $lastName, $id )
 	{
 		$retValue = '{"id":' . $id . ',"firstName":"' . $firstName . '","lastName":"' . $lastName . '","error":""}';
 		sendResultInfoAsJson( $retValue );
 	}
 	
-
 	function getRequestInfo()
 	{
 		return json_decode(file_get_contents('php://input'), true);
@@ -106,6 +63,7 @@
 		$retValue = '{"id":0,"firstName":"","lastName":"","error":"' . $err . '"}';
 		sendResultInfoAsJson( $retValue );
 	}
+
 
 
 

@@ -12,14 +12,14 @@
 	$firstName = preg_replace("/[^a-zA-Z]/","",$inData["first"]);
 	$lastName = preg_replace("/[^a-zA-Z]/","",$inData["last"]);
 	$user = preg_replace("/[^A-Za-z0-9]/","",$inData["userNew"]);
-	$password = preg_replace("/[^A-Za-z0-9!@#$%^&*]/","",$inData["password"]);
+	$password1 = preg_replace("/[^A-Za-z0-9!@#$%^&*]/","",$inData["password"]);
 	$email = preg_replace("/[^A-Za-z0-9|@|.]/","",$inData["email"]);
 
 	// Info for server and database access -- change values to server info on aws
+	$database = 'conmandatabase';
 	$username = 'conman';
 	$password = 'bananasAreActuallyCorn72!';
 	$server = 'mydatabase.c7s05rybpupb.us-east-2.rds.amazonaws.com';
-	$database = 'conmandatabase';
 
 	// Connect to remote database on server
 	$conn = new mysqli($server, $username, $password, $database);
@@ -37,20 +37,29 @@
 		$sql = "select email from users where email = '$email'";
 		$result = $conn->query($sql);
 
+		// This works correctly just gotta make sure json is being passed in 
+		if($result->num_rows > 0)
+		{
+			returnWithError("An account has already been create using this email");
+			exit();
+		}
+
+		/*
 		if(!$result)
 		{
 			returnWithError("An account has already been created using this email");
 			exit();
 		}
+		*/
 		
 		// Hashes the password 
-		$hash = password_hash($password, PASSWORD_DEFAULT);
+		$hash = password_hash($password1, PASSWORD_DEFAULT);
 		
 
 		// Insert data into database
 		// These values are the columns in my localhost database 
 		// so they may change once I create the columns on the remote database on aws server
-		$sql = 'insert into users (firstName, lastName, password, username, email) values ' . "('$firstName', '$lastName', '$hash', '$user', '$email')";
+		$sql = 'insert into users (firstName, lastName, password, username, email) values ' . "('$firstName', '$lastName', '$password1', '$user', '$email')";
 
 		$result = $conn->query($sql);
 
@@ -60,30 +69,28 @@
 		$conn->close();
 	}
 
+	function sendResultInfoAsJson( $obj )
+	{
+		header('Content-type: application/json');
+		//echo $obj;
+	}
+
+	function returnWithInfo( $firstName, $lastName, $id )
+	{
+		$retValue = '{"id":' . $id . ',"firstName":"' . $firstName . '","lastName":"' . $lastName . '","error":""}';
+		sendResultInfoAsJson( $retValue );
+	}
+	
+
 	function getRequestInfo()
 	{
 		return json_decode(file_get_contents('php://input'), true);
 	}
-	//should these two functions be the same?
-	function sendAsJson($obj)
-	{
-		return json_decode(file_get_contents('php://input'), true);
-	}
 
-	function returnWithError($error)
+	function returnWithError( $err )
 	{
-		$ret = '{"error": "' . $error . '"}';
-		sendAsJson($ret);
+		$retValue = '{"id":0,"firstName":"","lastName":"","error":"' . $err . '"}';
+		sendResultInfoAsJson( $retValue );
 	}
-
-	// Not sure if we need this function but i'll leave it here just incase
-	/*
-	function get_post($conn, $var)
- 	{
- 		// real_escape_string prevents sql injections by removing
- 		// any magic quites added to auser-inputting string 
- 		return $conn->real_escape_string($_POST[$var]);
- 	}
-	*/
 
  ?>

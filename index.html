@@ -42,7 +42,7 @@
 			<input type="text" id="email" placeholder="Email" required=""><br>
 			<input type="text" id="newUser" placeholder="Username" required=""><br>
 			<input type="password" id="passwordNewUser" placeholder="Password" required=""><br>
-			<button type="submit" onclick="registerNewUser();">Sign Up!</button>
+			<button id="signUpButton" type="submit" onclick="registerNewUser();">Sign Up!</button>
 			<span id="userAddResult"></span>
 			<br><br>
 			<button id="backToLogin" type="submit" onclick="backToLogin();">Back To Login</button>
@@ -54,14 +54,19 @@
 		<input type="text" name="search" id="searchContact">
 		<!-- Havent started the code for searchContact and deleteContact functions yet so they don't do anything-->
 		<button type="submit" onclick="searchContact();">Search Contact</button>
+		<button type="submit" onclick="showAll();">Show All Contacts</button>
 		<br>
 		<input type="text" name="search" id="deleteContact" style="display:none; visibility:hidden;">
 		<button type="submit" onclick="deleteContact();" style="display:none; visibility:hidden;">Delete Contact</button>
 		<div id="contactSearchResult">
 			<table>
+				<thead>
 				<tr>
-					<th>First Name</th><th>Last Name</th><th>Number</th><th>Email</th><th>Address</th><th></th>
+					<th>First Name</th><th>Last Name</th><th>Number</th><th>Email</th><th>Address</th><th></th><th style="display:none; visibility:show;">contactID</th>
 				</tr>
+			</thead>
+			<tbody id="searchResults">
+			</tbody>
 			</table>
 		</div>
 	</div>
@@ -80,3 +85,4 @@
 
 </body>
 </html>
+<!--  -->
