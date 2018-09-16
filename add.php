@@ -32,16 +32,20 @@
 	// Create new user
 	else
 	{
-		$query = "select count(email) as emailCount from contacts where email = '$email' and userID = '$id'";
-		$result = $conn->query($query);
-
-		$row = $result->fetch_assoc();
-
-		if ($row["emailCount"] > 0)
+		if ($email != "")
 		{
-			returnWithInfo('{"contactID" : -1}');
-			exit();
+			$query = "select count(email) as emailCount from contacts where email = '$email' and userID = '$id'";
+			$result = $conn->query($query);
+
+			$row = $result->fetch_assoc();
+
+			if ($row["emailCount"] > 0)
+			{
+				returnWithInfo('{"contactID" : -1}');
+				exit();
+			}
 		}
+		
 		// Check if email already exists
 		$sql = "insert into contacts (firstName, lastName, phoneNumber, email, userID, address) values" . "('$firstName', '$lastName', '$phone', '$email', '$id', '$address')";
 		//$sql = "insert into contacts (firstName, lastName, phoneNumber, email, userID, address) values" . "('test', 'test', 'test', 'test', 10, 'test');";
