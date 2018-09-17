@@ -1,9 +1,9 @@
-<?php 	
+<?php
 
 	$inData = getRequestInfo();
-	
-	// Assign variables json strings 
-	// reference the json in the javascript code 
+
+	// Assign variables json strings
+	// reference the json in the javascript code
 	$ID = $inData["contactID"];
 
 
@@ -30,10 +30,10 @@
 		//$sql = "insert into contacts (firstName, lastName, phoneNumber, email, userID, address) values" . "('test', 'test', 'test', 'test', 10, 'test');";
 		$result = $conn->query($sql);
 
-		// This works correctly just gotta make sure json is being passed in 
+		// This works correctly just gotta make sure json is being passed in
 		if(!$result)
 		{
-				returnWithError("invalid contactID, bitch");
+				returnWithError("invalid contactID");
 		}
 
 		$conn->close();
@@ -52,7 +52,7 @@
 		$retValue = '{"id":' . $id . ',"firstName":"' . $firstName . '","lastName":"' . $lastName . '","error":""}';
 		sendResultInfoAsJson( $retValue );
 	}
-	
+
 	function getRequestInfo()
 	{
 		return json_decode(file_get_contents('php://input'), true);

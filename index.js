@@ -41,11 +41,11 @@ function showResults(res)
     while(res[i] != null)
     {
         var temp = JSON.parse(res[i]);
-            console.log("temp contactid is :" + temp.contactID + " , bitch");
+            console.log("temp contactid is :" + temp.contactID);
 
         if (temp.contactID == null || temp.contactID == -1)
         {
-            console.log("we got here, bitch");
+            console.log("we got here");
             return;
         }
 
@@ -96,7 +96,7 @@ function showAll()
             if(this.readyState == 4 && this.status == 200)
             {
                 var res = xhr.responseText.split("||");
-                
+
                 showResults(res);
             }
         };
@@ -179,7 +179,7 @@ function doLogin()
             showAll();
             }
         }
-        
+
     }
     catch(err)
     {
